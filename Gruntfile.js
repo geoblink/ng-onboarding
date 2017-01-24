@@ -47,7 +47,7 @@ module.exports = function(grunt) {
           {
             expand: true,
             src: 'dist/ng-onboarding.*',
-            dest: '../geoblink/geoblink-app/app-client/node_modules/ng-onboarding/',
+            dest: '../geoblink/app-client/node_modules/ng-onboarding/',
             filter: 'isFile'
           }
         ]
