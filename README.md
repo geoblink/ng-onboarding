@@ -4,6 +4,11 @@ ngOnboarding is a tooltip tutorial / onboarding framework for [Angular.js](http:
 
 ![ngOnboarding Screenshot](https://raw.github.com/adamalbrecht/ngOnboarding/master/screenshot.png)
 
+## Copy task warning
+
+In this fork I have added a copy task with a hardcoded path to the project I'm currently working on. If by chance you should stumble onto this fork
+in stead of the the original repo, you probably want to remove the copy task or modify it to your needs.
+
 ## Dependencies
 
 This library requires Angular.js 1.2 or greater along with any recent version of jQuery.

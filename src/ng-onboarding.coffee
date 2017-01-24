@@ -130,7 +130,7 @@ app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', 
             top = $(attachTo).offset().top + $(attachTo).outerHeight() + yMargin
           else if scope.position == 'top'
             bottom = $(window).height() - $(attachTo).offset().top + yMargin
-            
+
 
           if curStep['yOffset']
             top = top + curStep['yOffset'] if top != null
@@ -149,7 +149,7 @@ app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', 
   template: """
               <div class='onboarding-container' ng-show='enabled'>
                 <div class='{{overlayClass}}' ng-style='{opacity: overlayOpacity}', ng-show='overlay'></div>
-                <div class='{{popoverClass}} {{positionClass}}' ng-style="{width: width, height: height, left: left, top: top, right: right, bottom: bottom}">
+                <div class='{{popoverClass}} {{positionClass}}' ng-style="{width: width + 'px', height: height + 'px', left: left + 'px', top: top + 'px', right: right + 'px', bottom: bottom + 'px'}">
                   <div class='{{arrowClass}}'></div>
                   <h3 class='{{titleClass}}' ng-show='title' ng-bind='title'></h3>
                   <a href='' ng-click='close()' class='{{closeButtonClass}}' ng-bind-html='closeButtonText'></a>

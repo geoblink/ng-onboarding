@@ -28,7 +28,7 @@ module.exports = function(grunt) {
     watch: {
       scripts: {
         files: ['**/*.coffee', '**/*.less'],
-        tasks: ['coffee', 'uglify', 'less'],
+        tasks: ['coffee', 'uglify', 'less', 'copy'],
         options: {
           debounceDelay: 250,
         },
@@ -40,15 +40,28 @@ module.exports = function(grunt) {
         src: ['dist/*.js', 'dist/*.css'],
         dest: 'dist/ng-onboarding.zip'
       }
+    },
+    copy: {
+      main: {
+        files: [
+          {
+            expand: true,
+            src: 'dist/ng-onboarding.*',
+            dest: '../geoblink/geoblink-app/app-client/node_modules/ng-onboarding/',
+            filter: 'isFile'
+          }
+        ]
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-coffee');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-zip');
 
-  grunt.registerTask('default', ['coffee', 'uglify', 'less', 'watch']);
+  grunt.registerTask('default', ['coffee', 'uglify', 'less', 'copy', 'watch']);
   grunt.registerTask('package', ['coffee', 'uglify', 'less', 'zip']);
 };
