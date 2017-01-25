@@ -74,38 +74,45 @@
             }
           };
           scope.$watch('index', function(newVal, oldVal) {
-            var attr, k, v, _i, _len;
             if (newVal === null) {
               scope.enabled = false;
               setupOverlay(false);
               return;
             }
             curStep = scope.steps[scope.index];
-            scope.finalStep = curStep.finalStep;
-            scope.lastStep = scope.index + 1 === scope.steps.length;
-            scope.showNextButton = scope.index + 1 < scope.steps.length;
-            scope.showPreviousButton = scope.index > 0;
-            for (_i = 0, _len = attributesToClear.length; _i < _len; _i++) {
-              attr = attributesToClear[_i];
-              scope[attr] = null;
+            if (curStep.preStep) {
+              curStep.preStep();
             }
-            for (k in ngOnboardingDefaults) {
-              v = ngOnboardingDefaults[k];
-              if (curStep[k] === void 0) {
+            console.log('outside timeout');
+            return $timeout(function() {
+              var attr, k, v, _i, _len;
+              console.log('inside timeout');
+              scope.finalStep = curStep.finalStep;
+              scope.lastStep = scope.index + 1 === scope.steps.length;
+              scope.showNextButton = scope.index + 1 < scope.steps.length;
+              scope.showPreviousButton = scope.index > 0;
+              for (_i = 0, _len = attributesToClear.length; _i < _len; _i++) {
+                attr = attributesToClear[_i];
+                scope[attr] = null;
+              }
+              for (k in ngOnboardingDefaults) {
+                v = ngOnboardingDefaults[k];
+                if (curStep[k] === void 0) {
+                  scope[k] = v;
+                }
+              }
+              for (k in curStep) {
+                v = curStep[k];
                 scope[k] = v;
               }
-            }
-            for (k in curStep) {
-              v = curStep[k];
-              scope[k] = v;
-            }
-            scope.description = $sce.trustAsHtml(scope.description);
-            scope.nextButtonText = $sce.trustAsHtml(scope.nextButtonText);
-            scope.previousButtonText = $sce.trustAsHtml(scope.previousButtonText);
-            scope.doneButtonText = $sce.trustAsHtml(scope.doneButtonText);
-            scope.closeButtonText = $sce.trustAsHtml(scope.closeButtonText);
-            setupOverlay();
-            return setupPositioning();
+              scope.description = $sce.trustAsHtml(scope.description);
+              scope.nextButtonText = $sce.trustAsHtml(scope.nextButtonText);
+              scope.previousButtonText = $sce.trustAsHtml(scope.previousButtonText);
+              scope.doneButtonText = $sce.trustAsHtml(scope.doneButtonText);
+              scope.closeButtonText = $sce.trustAsHtml(scope.closeButtonText);
+              setupOverlay();
+              return setupPositioning();
+            });
           });
           setupOverlay = function(showOverlay) {
             if (showOverlay == null) {
@@ -114,7 +121,10 @@
             $('.onboarding-focus').removeClass('onboarding-focus');
             if (showOverlay) {
               if (curStep['attachTo'] && scope.overlay) {
-                return $(curStep['attachTo']).addClass('onboarding-focus');
+                $(curStep['attachTo']).addClass('onboarding-focus');
+                if (curStep['alsoHighlight']) {
+                  return $(curStep['alsoHighlight']).addClass('onboarding-focus');
+                }
               }
             }
           };

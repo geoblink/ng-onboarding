@@ -72,32 +72,43 @@ app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', 
         return
 
       curStep = scope.steps[scope.index]
-      scope.finalStep = curStep.finalStep
-      scope.lastStep = (scope.index + 1 == scope.steps.length)
-      scope.showNextButton = (scope.index + 1 < scope.steps.length)
-      scope.showPreviousButton = (scope.index > 0)
-      for attr in attributesToClear
-        scope[attr] = null
-      for k, v of ngOnboardingDefaults
-        if curStep[k] == undefined
-          scope[k] = v
-      for k, v of curStep
-        scope[k] = v
 
-      # Allow some variables to include html
-      scope.description = $sce.trustAsHtml(scope.description)
-      scope.nextButtonText = $sce.trustAsHtml(scope.nextButtonText)
-      scope.previousButtonText = $sce.trustAsHtml(scope.previousButtonText)
-      scope.doneButtonText = $sce.trustAsHtml(scope.doneButtonText)
-      scope.closeButtonText = $sce.trustAsHtml(scope.closeButtonText)
-      setupOverlay()
-      setupPositioning()
+      if curStep.preStep
+        curStep.preStep()
+
+      console.log 'outside timeout'
+      $timeout(() ->
+        console.log 'inside timeout'
+        scope.finalStep = curStep.finalStep
+        scope.lastStep = (scope.index + 1 == scope.steps.length)
+        scope.showNextButton = (scope.index + 1 < scope.steps.length)
+        scope.showPreviousButton = (scope.index > 0)
+        for attr in attributesToClear
+          scope[attr] = null
+        for k, v of ngOnboardingDefaults
+          if curStep[k] == undefined
+            scope[k] = v
+        for k, v of curStep
+          scope[k] = v
+
+        # Allow some variables to include html
+        scope.description = $sce.trustAsHtml(scope.description)
+        scope.nextButtonText = $sce.trustAsHtml(scope.nextButtonText)
+        scope.previousButtonText = $sce.trustAsHtml(scope.previousButtonText)
+        scope.doneButtonText = $sce.trustAsHtml(scope.doneButtonText)
+        scope.closeButtonText = $sce.trustAsHtml(scope.closeButtonText)
+        setupOverlay()
+        setupPositioning()
+      )
+
 
     setupOverlay = (showOverlay=true) ->
       $('.onboarding-focus').removeClass('onboarding-focus')
       if showOverlay
         if curStep['attachTo'] && scope.overlay
           $(curStep['attachTo']).addClass('onboarding-focus')
+          if curStep['alsoHighlight']
+            $(curStep['alsoHighlight']).addClass('onboarding-focus')
 
     setupPositioning = ->
       attachTo = curStep['attachTo']
