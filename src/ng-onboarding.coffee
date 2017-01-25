@@ -46,7 +46,7 @@ app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', 
   scope:
     enabled: '='
     steps: '='
-    onFinishCallback: '&onFinishCallback'
+    onFinishCallback: '<onFinishCallback'
     index: '=stepIndex'
   replace: true
   link: (scope, element, attrs) ->
@@ -58,11 +58,11 @@ app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', 
     # Button Actions
     scope.next = -> scope.index = scope.index + 1
     scope.previous = -> scope.index = scope.index - 1
-    scope.close = ->
+    scope.close = (fromCloseButton) ->
       scope.enabled = false
       setupOverlay(false)
       if scope.onFinishCallback
-        scope.onFinishCallback()
+        scope.onFinishCallback(fromCloseButton)
 
     # Watch for changes in the current step index
     scope.$watch 'index', (newVal, oldVal) ->
@@ -152,7 +152,7 @@ app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', 
                 <div class='{{popoverClass}} {{positionClass}}' ng-style="{width: width + 'px', height: height + 'px', left: left + 'px', top: top + 'px', right: right + 'px', bottom: bottom + 'px'}">
                   <div class='{{arrowClass}}'></div>
                   <h3 class='{{titleClass}}' ng-show='title' ng-bind='title'></h3>
-                  <a href='' ng-click='close()' class='{{closeButtonClass}}' ng-bind-html='closeButtonText'></a>
+                  <a href='' ng-click='close(true)' class='{{closeButtonClass}}' ng-bind-html='closeButtonText'></a>
                   <div class='{{contentClass}}'>
                     <p ng-bind-html='description'></p>
                   </div>

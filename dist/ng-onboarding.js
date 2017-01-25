@@ -51,7 +51,7 @@
         scope: {
           enabled: '=',
           steps: '=',
-          onFinishCallback: '&onFinishCallback',
+          onFinishCallback: '<onFinishCallback',
           index: '=stepIndex'
         },
         replace: true,
@@ -66,11 +66,11 @@
           scope.previous = function() {
             return scope.index = scope.index - 1;
           };
-          scope.close = function() {
+          scope.close = function(fromCloseButton) {
             scope.enabled = false;
             setupOverlay(false);
             if (scope.onFinishCallback) {
-              return scope.onFinishCallback();
+              return scope.onFinishCallback(fromCloseButton);
             }
           };
           scope.$watch('index', function(newVal, oldVal) {
@@ -177,7 +177,7 @@
             return scope.index = 0;
           }
         },
-        template: "<div class='onboarding-container' ng-show='enabled'>\n  <div class='{{overlayClass}}' ng-style='{opacity: overlayOpacity}', ng-show='overlay'></div>\n  <div class='{{popoverClass}} {{positionClass}}' ng-style=\"{width: width + 'px', height: height + 'px', left: left + 'px', top: top + 'px', right: right + 'px', bottom: bottom + 'px'}\">\n    <div class='{{arrowClass}}'></div>\n    <h3 class='{{titleClass}}' ng-show='title' ng-bind='title'></h3>\n    <a href='' ng-click='close()' class='{{closeButtonClass}}' ng-bind-html='closeButtonText'></a>\n    <div class='{{contentClass}}'>\n      <p ng-bind-html='description'></p>\n    </div>\n    <div class='{{buttonContainerClass}}' ng-show='showButtons'>\n      <span ng-show='showStepInfo' class='{{stepClass}}'>Step {{index + 1}} of {{stepCount}}</span>\n      <button href='' ng-click='previous()' ng-show='showPreviousButton' class='{{buttonClass}}'>{{previousButtonText | translate}}</button>\n      <button href='' ng-click='next()' ng-show='showNextButton' class='{{buttonClass}}'>{{nextButtonText | translate}}</button>\n      <button href='' ng-click='close()' ng-show='showDoneButton && lastStep' class='{{buttonClass}}'>{{doneButtonText | translate}}</button>\n    </div>\n  </div>\n</div>"
+        template: "<div class='onboarding-container' ng-show='enabled'>\n  <div class='{{overlayClass}}' ng-style='{opacity: overlayOpacity}', ng-show='overlay'></div>\n  <div class='{{popoverClass}} {{positionClass}}' ng-style=\"{width: width + 'px', height: height + 'px', left: left + 'px', top: top + 'px', right: right + 'px', bottom: bottom + 'px'}\">\n    <div class='{{arrowClass}}'></div>\n    <h3 class='{{titleClass}}' ng-show='title' ng-bind='title'></h3>\n    <a href='' ng-click='close(true)' class='{{closeButtonClass}}' ng-bind-html='closeButtonText'></a>\n    <div class='{{contentClass}}'>\n      <p ng-bind-html='description'></p>\n    </div>\n    <div class='{{buttonContainerClass}}' ng-show='showButtons'>\n      <span ng-show='showStepInfo' class='{{stepClass}}'>Step {{index + 1}} of {{stepCount}}</span>\n      <button href='' ng-click='previous()' ng-show='showPreviousButton' class='{{buttonClass}}'>{{previousButtonText | translate}}</button>\n      <button href='' ng-click='next()' ng-show='showNextButton' class='{{buttonClass}}'>{{nextButtonText | translate}}</button>\n      <button href='' ng-click='close()' ng-show='showDoneButton && lastStep' class='{{buttonClass}}'>{{doneButtonText | translate}}</button>\n    </div>\n  </div>\n</div>"
       };
     }
   ]);
