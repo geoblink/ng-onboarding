@@ -58,11 +58,11 @@ app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', 
     # Button Actions
     scope.next = -> scope.index = scope.index + 1
     scope.previous = -> scope.index = scope.index - 1
-    scope.close = (fromCloseButton) ->
+    scope.close = (dontShowAnyMore) ->
       scope.enabled = false
       setupOverlay(false)
       if scope.onFinishCallback
-        scope.onFinishCallback(fromCloseButton)
+        scope.onFinishCallback(dontShowAnyMore)
 
     # Watch for changes in the current step index
     scope.$watch 'index', (newVal, oldVal) ->
@@ -72,6 +72,7 @@ app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', 
         return
 
       curStep = scope.steps[scope.index]
+      scope.finalStep = curStep.finalStep
       scope.lastStep = (scope.index + 1 == scope.steps.length)
       scope.showNextButton = (scope.index + 1 < scope.steps.length)
       scope.showPreviousButton = (scope.index > 0)
@@ -160,7 +161,7 @@ app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', 
                     <span ng-show='showStepInfo' class='{{stepClass}}'>Step {{index + 1}} of {{stepCount}}</span>
                     <button href='' ng-click='previous()' ng-show='showPreviousButton' class='{{buttonClass}}'>{{previousButtonText | translate}}</button>
                     <button href='' ng-click='next()' ng-show='showNextButton' class='{{buttonClass}}'>{{nextButtonText | translate}}</button>
-                    <button href='' ng-click='close()' ng-show='showDoneButton && lastStep' class='{{buttonClass}}'>{{doneButtonText | translate}}</button>
+                    <button href='' ng-click='close(finalStep)' ng-show='showDoneButton && lastStep' class='{{buttonClass}}'>{{doneButtonText | translate}}</button>
                   </div>
                 </div>
               </div>
