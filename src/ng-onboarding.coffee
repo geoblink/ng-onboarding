@@ -5,12 +5,13 @@
 #
 # Source Code: https://github.com/adamalbrecht/ngOnboarding
 #
-# Compatible with Angular 1.2.x
+# Forked and modified by Wojtek Galaj
 #
+# Works with angular 1.5.x
 
-app = angular.module("ngOnboarding", [])
+app = angular.module('ngOnboarding', [])
 
-app.provider "ngOnboardingDefaults", ->
+app.provider 'ngOnboardingDefaults', ->
   options: {
     overlay: true,
     overlayOpacity: 0.6,
@@ -20,12 +21,15 @@ app.provider "ngOnboardingDefaults", ->
     contentClass: 'onboarding-popover-content',
     arrowClass: 'onboarding-arrow',
     buttonContainerClass: 'onboarding-button-container',
-    buttonClass: "onboarding-button",
+    buttonClass: 'onboarding-button',
+    acceptTourButtonClass: 'onboarding-accept',
+    dontAccetpTourButtonClass: 'onboarding-reject',
     showButtons: true,
     nextButtonText: 'Next &rarr;',
     previousButtonText: '&larr; Previous',
     showDoneButton: true,
     doneButtonText: 'Done',
+    showCloseButton: true,
     closeButtonClass: 'onboarding-close-button',
     closeButtonText: 'X',
     stepClass: 'onboarding-step-info',
@@ -76,10 +80,10 @@ app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', 
       if curStep.preStep
         curStep.preStep()
 
-      console.log 'outside timeout'
       $timeout(() ->
-        console.log 'inside timeout'
+        # Set step variables to the scope
         scope.finalStep = curStep.finalStep
+        scope.acceptTourStep = curStep.acceptTour
         scope.lastStep = (scope.index + 1 == scope.steps.length)
         scope.showNextButton = (scope.index + 1 < scope.steps.length)
         scope.showPreviousButton = (scope.index > 0)
@@ -164,16 +168,27 @@ app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', 
                 <div class='{{popoverClass}} {{positionClass}}' ng-style="{width: width + 'px', height: height + 'px', left: left + 'px', top: top + 'px', right: right + 'px', bottom: bottom + 'px'}">
                   <div class='{{arrowClass}}'></div>
                   <h3 class='{{titleClass}}' ng-show='title' ng-bind='title'></h3>
-                  <a href='' ng-click='close(true)' class='{{closeButtonClass}}' ng-bind-html='closeButtonText'></a>
-                  <div class='{{contentClass}}'>
-                    <p ng-bind-html='description'></p>
+                  <a href='' ng-if='showCloseButton' ng-click='close(true)' class='{{closeButtonClass}}' ng-bind-html='closeButtonText'></a>
+
+                  <div ng-if='acceptTourStep' class='onboarding-accept-holder'>
+                    <div ng-bind-html='description'></div>
+                    <button ng-click='next()' class='{{buttonClass}} {{acceptTourButtonClass}}'>{{acceptTourStep.ok | translate}}</button>
+                    <button ng-click='close(true)' class='{{buttonClass}} {{dontAccetpTourButtonClass}}'>{{acceptTourStep.ko | translate}}</button>
+                    <p>{{acceptTourStep.disclaimer}}</p>
                   </div>
-                  <div class='{{buttonContainerClass}}' ng-show='showButtons'>
-                    <span ng-show='showStepInfo' class='{{stepClass}}'>Step {{index + 1}} of {{stepCount}}</span>
-                    <button href='' ng-click='previous()' ng-show='showPreviousButton' class='{{buttonClass}}'>{{previousButtonText | translate}}</button>
-                    <button href='' ng-click='next()' ng-show='showNextButton' class='{{buttonClass}}'>{{nextButtonText | translate}}</button>
-                    <button href='' ng-click='close(finalStep)' ng-show='showDoneButton && lastStep' class='{{buttonClass}}'>{{doneButtonText | translate}}</button>
+
+                  <div ng-if='!acceptTourStep'>
+                    <div class='{{contentClass}}'>
+                      <p ng-bind-html='description'></p>
+                    </div>
+                    <div class='{{buttonContainerClass}}' ng-show='showButtons'>
+                      <span ng-show='showStepInfo' class='{{stepClass}}'>Step {{index + 1}} of {{stepCount}}</span>
+                      <button href='' ng-click='previous()' ng-show='showPreviousButton' class='{{buttonClass}}'>{{previousButtonText | translate}}</button>
+                      <button href='' ng-click='next()' ng-show='showNextButton' class='{{buttonClass}}'>{{nextButtonText | translate}}</button>
+                      <button href='' ng-click='close(finalStep)' ng-show='showDoneButton && lastStep' class='{{buttonClass}}'>{{doneButtonText | translate}}</button>
+                    </div>
                   </div>
+
                 </div>
               </div>
             """
