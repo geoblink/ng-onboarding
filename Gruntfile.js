@@ -47,7 +47,7 @@ module.exports = function(grunt) {
           {
             expand: true,
             src: 'dist/ng-onboarding.*',
-            dest: '../geoblink/app-client/node_modules/ng-onboarding/',
+            dest: 'Add a route to your project',
             filter: 'isFile'
           }
         ]
@@ -62,6 +62,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-zip');
 
-  grunt.registerTask('default', ['coffee', 'uglify', 'less', 'copy', 'watch']);
+  grunt.registerTask('default', ['coffee', 'uglify', 'less', 'watch']);
+  grunt.registerTask('copy-to-project', ['coffee', 'uglify', 'less', 'copy', 'watch']);
   grunt.registerTask('package', ['coffee', 'uglify', 'less', 'zip']);
 };
