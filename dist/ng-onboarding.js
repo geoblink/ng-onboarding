@@ -48,7 +48,7 @@
   });
 
   app.directive('onboardingPopover', [
-    'ngOnboardingDefaults', '$sce', '$timeout', function(ngOnboardingDefaults, $sce, $timeout) {
+    'ngOnboardingDefaults', '$sce', '$timeout', '$filter', function(ngOnboardingDefaults, $sce, $timeout, $filter) {
       return {
         restrict: 'E',
         scope: {
@@ -59,8 +59,9 @@
         },
         replace: true,
         link: function(scope, element, attrs) {
-          var attributesToClear, curStep, setupOverlay, setupPositioning;
+          var attributesToClear, curStep, setupOverlay, setupPositioning, translate;
           curStep = null;
+          translate = $filter('translate');
           attributesToClear = ['title', 'top', 'right', 'bottom', 'left', 'width', 'height', 'position'];
           scope.stepCount = scope.steps.length;
           scope.next = function() {
@@ -109,11 +110,11 @@
                 v = curStep[k];
                 scope[k] = v;
               }
-              scope.description = $sce.trustAsHtml(scope.description);
-              scope.nextButtonText = $sce.trustAsHtml(scope.nextButtonText);
-              scope.previousButtonText = $sce.trustAsHtml(scope.previousButtonText);
-              scope.doneButtonText = $sce.trustAsHtml(scope.doneButtonText);
-              scope.closeButtonText = $sce.trustAsHtml(scope.closeButtonText);
+              scope.description = $sce.trustAsHtml(translate(scope.description));
+              scope.nextButtonText = $sce.trustAsHtml(translate(scope.nextButtonText));
+              scope.previousButtonText = $sce.trustAsHtml(translate(scope.previousButtonText));
+              scope.doneButtonText = $sce.trustAsHtml(translate(scope.doneButtonText));
+              scope.closeButtonText = $sce.trustAsHtml(translate(scope.closeButtonText));
               setupOverlay();
               return setupPositioning();
             });
@@ -192,7 +193,7 @@
             return scope.index = 0;
           }
         },
-        template: "<div class='onboarding-container' ng-show='enabled'>\n  <div class='{{overlayClass}}' ng-style='{opacity: overlayOpacity}', ng-show='overlay'></div>\n  <div class='{{popoverClass}} {{positionClass}}' ng-style=\"{width: width + 'px', height: height + 'px', left: left + 'px', top: top + 'px', right: right + 'px', bottom: bottom + 'px'}\">\n    <div class='{{arrowClass}}'></div>\n    <h3 class='{{titleClass}}' ng-show='title' ng-bind='title'></h3>\n    <a href='' ng-if='showCloseButton' ng-click='close(true)' class='{{closeButtonClass}}' ng-bind-html='closeButtonText'></a>\n\n    <div ng-if='acceptTourStep' class='onboarding-accept-holder'>\n      <div ng-bind-html='description'></div>\n      <button ng-click='next()' class='{{buttonClass}} {{acceptTourButtonClass}}'>{{acceptTourStep.ok | translate}}</button>\n      <button ng-click='close(true)' class='{{buttonClass}} {{dontAccetpTourButtonClass}}'>{{acceptTourStep.ko | translate}}</button>\n      <p>{{acceptTourStep.disclaimer}}</p>\n    </div>\n\n    <div ng-if='!acceptTourStep'>\n      <div class='{{contentClass}}'>\n        <p ng-bind-html='description'></p>\n      </div>\n      <div class='{{buttonContainerClass}}' ng-show='showButtons'>\n        <span ng-show='showStepInfo' class='{{stepClass}}'>Step {{index + 1}} of {{stepCount}}</span>\n        <button href='' ng-click='previous()' ng-show='showPreviousButton' class='{{buttonClass}}'>{{previousButtonText | translate}}</button>\n        <button href='' ng-click='next()' ng-show='showNextButton' class='{{buttonClass}}'>{{nextButtonText | translate}}</button>\n        <button href='' ng-click='close(finalStep)' ng-if='showDoneButton && lastStep' class='{{buttonClass}} {{doneButtonClass}}'>{{doneButtonText | translate}}</button>\n      </div>\n    </div>\n\n  </div>\n</div>"
+        template: "<div class='onboarding-container' ng-show='enabled'>\n  <div class='{{overlayClass}}' ng-style='{opacity: overlayOpacity}', ng-show='overlay'></div>\n  <div class='{{popoverClass}} {{positionClass}}' ng-style=\"{width: width + 'px', height: height + 'px', left: left + 'px', top: top + 'px', right: right + 'px', bottom: bottom + 'px'}\">\n    <div class='{{arrowClass}}'></div>\n    <h3 class='{{titleClass}}' ng-show='title' ng-bind='title'></h3>\n    <a href='' ng-if='showCloseButton' ng-click='close(true)' class='{{closeButtonClass}}' ng-bind-html='closeButtonText'></a>\n\n    <div ng-if='acceptTourStep' class='onboarding-accept-holder'>\n      <div translate ng-bind-html='description'></div>\n      <button ng-click='next()' class='{{buttonClass}} {{acceptTourButtonClass}}'>{{acceptTourStep.ok | translate}}</button>\n      <button ng-click='close(true)' class='{{buttonClass}} {{dontAccetpTourButtonClass}}'>{{acceptTourStep.ko | translate}}</button>\n      <p>{{acceptTourStep.disclaimer | translate}}</p>\n    </div>\n\n    <div ng-if='!acceptTourStep'>\n      <div class='{{contentClass}}'>\n        <p translate ng-bind-html='description'></p>\n      </div>\n      <div class='{{buttonContainerClass}}' ng-show='showButtons'>\n        <span ng-show='showStepInfo' class='{{stepClass}}'>Step {{index + 1}} of {{stepCount}}</span>\n        <button href='' ng-click='previous()' ng-show='showPreviousButton' class='{{buttonClass}}'>{{previousButtonText | translate}}</button>\n        <button href='' ng-click='next()' ng-show='showNextButton' class='{{buttonClass}}'>{{nextButtonText | translate}}</button>\n        <button href='' ng-click='close(finalStep)' ng-if='showDoneButton && lastStep' class='{{buttonClass}} {{doneButtonClass}}'>{{doneButtonText | translate}}</button>\n      </div>\n    </div>\n\n  </div>\n</div>"
       };
     }
   ]);

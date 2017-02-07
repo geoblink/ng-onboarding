@@ -45,7 +45,7 @@ app.provider 'ngOnboardingDefaults', ->
     else
       @options[keyOrHash] = value
 
-app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', (ngOnboardingDefaults, $sce, $timeout) ->
+app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', '$filter', (ngOnboardingDefaults, $sce, $timeout, $filter) ->
   restrict: 'E'
   scope:
     enabled: '='
@@ -56,6 +56,7 @@ app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', 
   link: (scope, element, attrs) ->
     # Important Variables
     curStep = null
+    translate = $filter('translate')
     attributesToClear = ['title', 'top', 'right', 'bottom', 'left', 'width', 'height', 'position']
     scope.stepCount = scope.steps.length
 
@@ -98,11 +99,11 @@ app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', 
           scope[k] = v
 
         # Allow some variables to include html
-        scope.description = $sce.trustAsHtml(scope.description)
-        scope.nextButtonText = $sce.trustAsHtml(scope.nextButtonText)
-        scope.previousButtonText = $sce.trustAsHtml(scope.previousButtonText)
-        scope.doneButtonText = $sce.trustAsHtml(scope.doneButtonText)
-        scope.closeButtonText = $sce.trustAsHtml(scope.closeButtonText)
+        scope.description = $sce.trustAsHtml(translate(scope.description))
+        scope.nextButtonText = $sce.trustAsHtml(translate(scope.nextButtonText))
+        scope.previousButtonText = $sce.trustAsHtml(translate(scope.previousButtonText))
+        scope.doneButtonText = $sce.trustAsHtml(translate(scope.doneButtonText))
+        scope.closeButtonText = $sce.trustAsHtml(translate(scope.closeButtonText))
         setupOverlay()
         setupPositioning()
       )
@@ -173,15 +174,15 @@ app.directive 'onboardingPopover', ['ngOnboardingDefaults', '$sce', '$timeout', 
                   <a href='' ng-if='showCloseButton' ng-click='close(true)' class='{{closeButtonClass}}' ng-bind-html='closeButtonText'></a>
 
                   <div ng-if='acceptTourStep' class='onboarding-accept-holder'>
-                    <div ng-bind-html='description'></div>
+                    <div translate ng-bind-html='description'></div>
                     <button ng-click='next()' class='{{buttonClass}} {{acceptTourButtonClass}}'>{{acceptTourStep.ok | translate}}</button>
                     <button ng-click='close(true)' class='{{buttonClass}} {{dontAccetpTourButtonClass}}'>{{acceptTourStep.ko | translate}}</button>
-                    <p>{{acceptTourStep.disclaimer}}</p>
+                    <p>{{acceptTourStep.disclaimer | translate}}</p>
                   </div>
 
                   <div ng-if='!acceptTourStep'>
                     <div class='{{contentClass}}'>
-                      <p ng-bind-html='description'></p>
+                      <p translate ng-bind-html='description'></p>
                     </div>
                     <div class='{{buttonContainerClass}}' ng-show='showButtons'>
                       <span ng-show='showStepInfo' class='{{stepClass}}'>Step {{index + 1}} of {{stepCount}}</span>
